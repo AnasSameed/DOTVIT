@@ -14,7 +14,7 @@ import base64
 # from Bio.Seq import Seq
 # from Bio.SeqRecord import SeqRecord
 
-file = 'file/'
+
 app = Flask(__name__, template_folder=file)
 
 def generate_dot(seq1, seq2):

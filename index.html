@@ -1,0 +1,503 @@
+    <!-- <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Sequence Analysis</title>
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+        <style>
+            body {
+                font-family: 'Poppins', sans-serif;
+                background: #f2f2f2;
+                color: #333;
+                margin: 0;
+                padding: 20px;
+            }
+            h1 {
+                color: #333;
+                text-align: center;
+                margin-bottom: 20px;
+            }
+            .form-container {
+                background: #fff;
+                padding: 20px;
+                border-radius: 10px;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                margin-bottom: 20px;
+            }
+            .form-group label {
+                color: #333;
+            }
+            .form-control, .custom-select {
+                background: #f2f2f2;
+                color: #333;
+                border: 1px solid #ccc;
+                box-shadow: none;
+            }
+            .form-control::placeholder {
+                color: #999;
+            }
+            .btn-neon {
+                background-color: crimson;
+                color: #fff;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+                font-size: 14px;
+                transition: background-color 0.3s, color 0.3s;
+                display: block;
+                margin: 0 auto;
+            }
+            .btn-neon:hover {
+                background-color: #141414;
+                color: #fff;
+            }
+            .graph-container {
+                display: flex;
+                justify-content: center;
+                margin-bottom: 20px;
+            }
+            .graph-container img {
+                max-width: 80%;
+                height: auto;
+                border: 1px solid #ccc;
+                border-radius: 10px;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                opacity: 0;
+                animation: fadeIn 2s forwards;
+            }
+            .foot {
+                background-color: rgb(50, 5, 109);
+                color: #fff;
+                max-height: 200px;
+                padding: 10px;
+                text-align: center;
+                margin-top: 50%;
+            }
+            .header
+            {
+                display: flex;
+                justify-content: center;
+            }
+            .header img {
+                height: 70px;
+                width: 70px;
+                mix-blend-mode: multiply;
+                margin-bottom: 25px;
+            }
+            .Header h1
+            {
+                font-size: 28px;
+            }
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                }
+                to {
+                    opacity: 1;
+                }
+            }
+            @media (max-width: 600px) {
+                h1 {
+                    font-size: 2em;
+                }
+                .form-container {
+                    width: 100%;
+                    padding: 10px;
+                }
+                .graph-container img {
+                    max-width: 100%;
+                }
+                .header
+                {
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    margin-bottom: 20px;
+                }
+                .header img
+                {
+                    height:40px;
+                    width:40px;
+                    
+                }
+                .Header h1
+                {
+                    font-size: 20px;
+                }
+                h2
+                {
+                    font-size: 18px;
+                    font-weight: bold;
+                }
+                p
+                {
+                    font-size: 14px;
+                    font-weight: bold;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="header text-center">
+            <img src="../static/icon.png" class="img-fluid" alt="Logo">
+        </div>
+
+        <div class="Header text-center"> <h1>DotVIT Sequence Generator</h1></div>
+        <div class="container">
+            <div class="form-container">
+                <form method="post">
+                    <div class="form-group">
+                        <label for="sequence1">Sequence 1:</label>
+                        <input type="text" id="sequence1" name="sequence1" class="form-control" placeholder="Enter sequence 1" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="sequence2">Sequence 2:</label>
+                        <input type="text" id="sequence2" name="sequence2" class="form-control" placeholder="Enter sequence 2" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="graphs">Select graph to display:</label>
+                        <select id="graphs" name="graphs" class="custom-select" required>
+                            <option value="dot_plot" {% if 'dot_plot' in selected_graphs %}selected{% endif %}>Dot Plot</option>
+                            <option value="histogram" {% if 'histogram' in selected_graphs %}selected{% endif %}>Character Frequency Histogram</option>
+                            <option value="gc_content_plot" {% if 'gc_content_plot' in selected_graphs %}selected{% endif %}>GC Content Plot</option>
+                            <option value="heatmap" {% if 'heatmap' in selected_graphs %}selected{% endif %}>Heatmap</option>
+                            <option value="violin_plot" {% if 'violin_plot' in selected_graphs %}selected{% endif %}>Violin Plot</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-neon">Submit</button>
+                </form>
+            </div>
+            {% if dot_plot %}
+            <h2 style="text-align: center;">Dot Plot</h2>
+            <div class="graph-container">
+                <img src="data:image/png;base64,{{ dot_plot }}" alt="Dot Plot">
+            </div>
+            {% endif %}
+            {% if histogram %}
+            <h2 style="text-align: center;">Character Frequency Histogram</h2>
+            <div class="graph-container">
+                <img src="data:image/png;base64,{{ histogram }}" alt="Character Frequency Histogram">
+            </div>
+            {% endif %}
+            {% if gc_content_plot %}
+            <h2 style="text-align: center;">GC Content Plot</h2>
+            <div class="graph-container">
+                <img src="data:image/png;base64,{{ gc_content_plot }}" alt="GC Content Plot">
+            </div>
+            {% endif %}
+            {% if heatmap %}
+            <h2 style="text-align: center;">Heatmap</h2>
+            <div class="graph-container">
+                <img src="data:image/png;base64,{{ heatmap }}" alt="Heatmap">
+            </div>
+            {% endif %}
+            {% if violin_plot %}
+            <h2 style="text-align: center;">Violin Plot</h2>
+            <div class="graph-container">
+                <img src="data:image/png;base64,{{ violin_plot }}" alt="Violin Plot">
+            </div>
+            {% endif %}
+        </div>
+        
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+        <div class="foot">
+            <footer class="footer text-center">
+                <marquee behavior="" direction="left" scrollamount = "2"><p style="font-size: 15px;">&copy; VIT Vellore Department of Biotechnology and Advanced Sciences</p></marquee>
+            </footer>
+        </div>
+
+        <script>
+            
+        </script>
+    </body>
+    </html> -->
+
+
+    <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sequence Analysis</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f2f2f2;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .form-container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            color: #333;
+        }
+        .form-control, .custom-select {
+            background: #f2f2f2;
+            color: #333;
+            border: 1px solid #ccc;
+            box-shadow: none;
+        }
+        .form-control::placeholder {
+            color: #999;
+        }
+        .btn-neon {
+            background-color: crimson;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s, color 0.3s;
+            display: block;
+            margin: 0 auto 10px auto;
+        }
+        .btn-neon:hover {
+            background-color: #141414;
+            color: #fff;
+        }
+        .btn-reset {
+            background-color: gray;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s, color 0.3s;
+            display: block;
+            margin: 0 auto;
+        }
+        .btn-reset:hover {
+            background-color: #555;
+            color: #fff;
+        }
+        .graph-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .graph-container img {
+            max-width: 80%;
+            height: auto;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            opacity: 0;
+            animation: fadeIn 2s forwards;
+        }
+        .foot {
+            background-color: rgb(50, 5, 109);
+            color: #fff;
+            max-height: 200px;
+            padding: 10px;
+            text-align: center;
+            margin-top: 50%;
+        }
+        .header {
+            display: flex;
+            justify-content: center;
+        }
+        .header img {
+            height: 70px;
+            width: 70px;
+            mix-blend-mode: multiply;
+            margin-bottom: 25px;
+        }
+        .Header h1 {
+            font-size: 28px;
+        }
+        .hidden {
+            display: none;
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2em;
+            }
+            .form-container {
+                width: 100%;
+                padding: 10px;
+            }
+            .graph-container img {
+                max-width: 100%;
+            }
+            .header {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                margin-bottom: 20px;
+            }
+            .header img {
+                height: 40px;
+                width: 40px;
+            }
+            .Header h1 {
+                font-size: 20px;
+            }
+            h2 {
+                font-size: 18px;
+                font-weight: bold;
+            }
+            p {
+                font-size: 14px;
+                font-weight: bold;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header text-center">
+        <img src="../static/icon.png" class="img-fluid" alt="Logo">
+    </div>
+
+    <div class="Header text-center">
+        <h1>DotVIT Sequence Generator</h1>
+    </div>
+    <div class="container">
+        <div class="form-container">
+            <form id="sequence-form" method="post">
+                <div class="form-group">
+                    <label for="sequence1">Sequence 1:</label>
+                    <input type="text" id="sequence1" name="sequence1" class="form-control" placeholder="Enter sequence 1" required autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <label for="sequence2">Sequence 2:</label>
+                    <input type="text" id="sequence2" name="sequence2" class="form-control" placeholder="Enter sequence 2" autocomplete="off" required>
+                </div>
+                <div class="form-group">
+                    <label for="graphs">Select graph to display:</label>
+                    <select id="graphs" name="graphs" class="custom-select" required>
+                        <option value="dot_plot">Dot Plot</option>
+                        <option value="histogram">Character Frequency Histogram</option>
+                        <option value="gc_content_plot">GC Content Plot</option>
+<!--                        <option value="heatmap">Heatmap</option>-->
+<!--                        <option value="violin_plot">Violin Plot</option>-->
+                        <option value="scatter_plot">Scatter Plot</option>
+                        <option value="multiple">Multiple Sequence</option>
+<!--                        <option value="tree">Phylogenetic Tree</option>-->
+                    </select>
+                </div>
+                <div>
+                <button type="submit" class="btn btn-neon">Submit</button>
+                <button type="button" class="btn btn-reset" onclick="resetForm()">Reset</button>
+            </div>
+            </form>
+        </div>
+        <div id="graph-sections">
+            {% if dot_plot %}
+            <h2 style="text-align: center;">Dot Plot</h2>
+            <div class="graph-container">
+                <img src="data:image/png;base64,{{ dot_plot }}" alt="Dot Plot">
+            </div>
+            {% endif %}
+            {% if histogram %}
+            <h2 style="text-align: center;">Character Frequency Histogram</h2>
+            <div class="graph-container">
+                <img src="data:image/png;base64,{{ histogram }}" alt="Character Frequency Histogram">
+            </div>
+            {% endif %}
+            {% if gc_content_plot %}
+            <h2 style="text-align: center;">GC Content Plot</h2>
+            <div class="graph-container">
+                <img src="data:image/png;base64,{{ gc_content_plot }}" alt="GC Content Plot">
+            </div>
+            {% endif %}
+            {% if heatmap %}
+            <h2 style="text-align: center;">Heatmap</h2>
+            <div class="graph-container">
+                <img src="data:image/png;base64,{{ heatmap }}" alt="Heatmap">
+            </div>
+            {% endif %}
+
+            {% if multiple %}
+            <h2 style="text-align: center;">Multiple Sequence</h2>
+            <div class="graph-container">
+                <img src="data:image/png;base64,{{ multiple }}" alt="Heatmap">
+            </div>
+            {% endif %}
+            {% if tree %}
+            <h2 style="text-align: center;">Phylogenetic Tree</h2>
+            <div class="graph-container">
+                <img src="data:image/png;base64,{{ tree }}" alt="Tree">
+            </div>
+            {% endif %}
+            {% if scatter_plot %}
+            <h2 style="text-align: center;">Scatter Plot</h2>
+            <div class="graph-container">
+                <img src="data:image/png;base64,{{ scatter_plot }}" alt="Scatter Plot">
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <div class="foot">
+        <footer class="footer text-center">
+            <marquee behavior="" direction="left" scrollamount="2">
+                <p style="font-size: 15px;">&copy; VIT Vellore Department of Biotechnology and Advanced Sciences</p>
+            </marquee>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            // Restore form data from local storage
+            if (localStorage.getItem('sequence1')) {
+                document.getElementById('sequence1').value = localStorage.getItem('sequence1');
+            }
+            if (localStorage.getItem('sequence2')) {
+                document.getElementById('sequence2').value = localStorage.getItem('sequence2');
+            }
+            if (localStorage.getItem('graphs')) {
+                document.getElementById('graphs').value = localStorage.getItem('graphs');
+            }
+        });
+
+        window.addEventListener('beforeunload', (event) => {
+            // Save form data to local storage
+            localStorage.setItem('sequence1', document.getElementById('sequence1').value);
+            localStorage.setItem('sequence2', document.getElementById('sequence2').value);
+            localStorage.setItem('graphs', document.getElementById('graphs').value);
+        });
+
+        function resetForm() {
+            // Reset form
+            document.getElementById('sequence-form').reset();
+            // Clear local storage
+            localStorage.removeItem('sequence1');
+            localStorage.removeItem('sequence2');
+            localStorage.removeItem('graphs');
+            // Hide graph sections
+            document.getElementById('graph-sections').classList.add('hidden');
+            // Refresh the page
+            location.reload();
+        }
+    </script>
+</body>
+</html>
+
